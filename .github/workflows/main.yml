@@ -27,11 +27,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      # Prints the new version
-      - name: Output Step                             
-        env:
-          NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
-        run: echo "new tag $NEW_TAG"
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=semver,pattern={{version}},value=${{ steps.version-bump.outputs.newTag }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ steps.version-bump.outputs.newTag }}
+            type=semver,pattern={{major}},value=${{ steps.version-bump.outputs.newTag }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}     
 
       # Log into the container registry from GitHub runner
       - name: Log into registry ${{ env.REGISTRY }}   
@@ -47,5 +55,5 @@ jobs:
           context: ./                         
           push: ${{ github.event_name != 'pull_request' }}
           # Pushed the image with `latest` tag and the new semantic version obtained from the version-bump step
-          tags: ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest, ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ steps.version-bump.outputs.newTag }}
+          tags: ${{ steps.meta.outputs.tags }}
           
