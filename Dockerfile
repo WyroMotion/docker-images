@@ -18,6 +18,10 @@ RUN echo 'deb http://deb.debian.org/debian bullseye-backports main' > /etc/apt/s
     clang-format \
     cppcheck \
     valgrind \
+    # Doxygen
+    doxygen \
+    doxygen-latex \
+    graphviz \
     # Vcpkg Dependencies
     zip \
     # Utility Dependencies
