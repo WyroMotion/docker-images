@@ -1,17 +1,17 @@
-FROM gcc:11
+FROM ubuntu:22.04
 
 ARG USERNAME=developer
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
 # Install dependencies
-RUN echo 'deb http://deb.debian.org/debian bullseye-backports main' > /etc/apt/sources.list.d/backports.list \
-    && apt-get update \
+RUN apt-get update \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get install -y --no-install-recommends \
     # Core Dependencies
     build-essential \
-    cmake/bullseye-backports \
+    crossbuild-essential-arm64 \
+    cmake \
     ninja-build \
     # Linters / Checkers
     clang-tidy \
