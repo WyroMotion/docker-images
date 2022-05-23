@@ -25,6 +25,7 @@ RUN apt-get update \
     graphviz \
     # Vcpkg Dependencies
     zip \
+    pkg-config \
     # Utility Dependencies
     git \
     ccache \
