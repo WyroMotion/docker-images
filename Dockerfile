@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:20.04
 
 ARG USERNAME=developer
 ARG USER_UID=1000
@@ -36,14 +36,15 @@ RUN apt-get update \
     # Clean up after apt-get
     && apt-get autoremove -y \
     && apt-get clean -y \
-    && rm -rf /var/lib/apt/lists/* \
-    # Build our own cmake
-    && curl -OL "https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz" \
+    && rm -rf /var/lib/apt/lists/*
+
+# Build our own cmake
+RUN curl -OL "https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz" \
     && tar xzf "cmake-${CMAKE_VERSION}.tar.gz" \
     && cd "cmake-${CMAKE_VERSION}" \
     && ./bootstrap -- -DCMAKE_BUILD_TYPE:STRING=Release \
     && make install \
-    && rm -rf cmake-"${CMAKE_VERSION}"*
+    && rm -rf /cmake-*
 
 # Create the non-root user
 RUN groupadd --gid $USER_GID $USERNAME \
